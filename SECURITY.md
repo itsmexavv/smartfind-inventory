@@ -1,23 +1,19 @@
-# Local demo security and data notes
+# Security and demo scope
 
-## Implemented
+This is a single-user learning project using synthetic data.
 
-- Bind to the loopback interface; reject unexpected Host headers. In Codespaces, allow only the exact GitHub-provided forwarded hostname and its HTTPS Origin; keep port visibility private.
-- JSON-only writes; reject foreign browser Origins and non-object JSON bodies.
-- Bound request bodies, text fields, numbers, CSV imports and compiler execution.
-- Parameterized SQL, foreign-key constraints and transaction rollback.
-- Escape user-controlled text in the UI. Serve a same-origin content security policy.
-- Neutralize leading spreadsheet formula characters in CSV text fields.
-- Serve files only beneath `web/`; do not serve databases or repository source.
-- Ignore default local databases and environment files in Git.
-- Use synthetic seed data, not student or financial records belonging to real people.
+## Implemented boundaries
 
-## Remaining before any public deployment
+- The HTTP server binds to loopback and accepts only local addresses or this Codespace's exact forwarded host and HTTPS Origin.
+- Writes require bounded JSON objects. Foreign browser origins and unexpected hosts are rejected.
+- Only index.html, guide.html, app.js, style.css, and icon.svg are served. Source, documentation, tests, and databases are private to the local filesystem.
+- User-controlled text is escaped before HTML rendering. The server supplies a same-origin content security policy and disables embedding.
+- SQLite queries are parameterized, foreign keys are enforced, and failed transactions roll back. Databases are excluded from Git.
 
-There are no user accounts, roles, sessions, authentication, authorization, rate limits or production server. Host/Origin checks are not substitutes for these. Local processes can access the APIs.
+## Current limits
 
-Add an appropriate web framework/server, authenticated sessions, authorization per resource, CSRF protection for the selected session design, HTTPS, monitored backups, a migration system, deployment configuration and an abuse-handling strategy. Review the language interpreter's limits before allowing untrusted internet callers. Review accessibility route data with qualified people before any actual navigation use.
+There are no user accounts, permissions, sessions, authentication, or production rate limits. Host/Origin validation does not provide user authentication; local processes can call the API. Keep Codespaces port visibility Private.
 
-This document describes scope; it is not a security audit or a production-hardening claim.
+Before a public deployment, choose a production server/framework, add authentication and per-resource authorization, review CSRF and abuse controls, and define migrations, backups, monitoring, and deployment configuration where appropriate. AccessPath's invented measurements must not be used for actual navigation.
 
-Only index.html, guide.html, app.js, style.css, and icon.svg are served. Python source, tests, documentation, and databases are never served over HTTP. This repository exposes only its own app API.
+This document is a scope description, not a security audit.
